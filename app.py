@@ -1,31 +1,49 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-# Mock function (later this will be replaced with Member 1's ML/API integration)
-def verify_claim_logic(claim):
-    if "sit-ups" in claim.lower() and "belly fat" in claim.lower():
-        return {
-            "verdict": "False",
-            "explanation": "Spot reduction is a myth. Sit-ups strengthen abs but do not burn belly fat.",
-            "sources": ["https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6769371/"],
-            "confidence": 0.95
-        }
-    else:
-        return {
-            "verdict": "Unverified",
-            "explanation": "No matching claim found in knowledge base.",
-            "sources": [],
-            "confidence": 0.50
-        }
+# Root route
+@app.route("/")
+def home():
+    return """
+    <h1>FitFact Backend is Live</h1>
+    <p>Status: OK</p>
+    <p>Available endpoints:</p>
+    <ul>
+        <li><a href='/health'>/health</a> - Health check</li>
+        <li><a href='/info'>/info</a> - Project info</li>
+        <li>POST /verify_claim - Claim verification (expects JSON)</li>
+    </ul>
+    """
 
+# Health check
+@app.route("/health")
+def health():
+    return jsonify({
+        "status": "healthy",
+        "service": "FitFact Backend",
+        "uptime": "running"
+    })
+
+# Info route
+@app.route("/info")
+def info():
+    return jsonify({
+        "project": "FitFact – Intelligent Text Verifier",
+        "version": "v1.0",
+        "description": "Backend API for claim verification (prototype)."
+    })
+
+# Verify Claim (main API)
 @app.route("/verify_claim", methods=["POST"])
 def verify_claim():
     data = request.get_json()
-    claim = data.get("claim", "")
+    claim_text = data.get("claim", "")
 
-    result = verify_claim_logic(claim)
-    return jsonify(result)
+    return jsonify({
+        "claim": claim_text,
+        "verification_result": "This is a placeholder. AI verification will be added soon."
+    })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
