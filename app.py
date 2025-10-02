@@ -1,49 +1,34 @@
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
 # Root route
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
     return """
-    <h1>FitFact Backend is Live</h1>
-    <p>Status: OK</p>
-    <p>Available endpoints:</p>
-    <ul>
-        <li><a href='/health'>/health</a> - Health check</li>
-        <li><a href='/info'>/info</a> - Project info</li>
-        <li>POST /verify_claim - Claim verification (expects JSON)</li>
-    </ul>
-    """
+        <h1>✅ FitFact Backend is Running</h1>
+        <p>Status: OK</p>
+        <p>Use the <code>/verify_claim</code> endpoint to check fitness-related claims.</p>
+    """, 200
 
-# Health check
-@app.route("/health")
+# Health check route
+@app.route("/health", methods=["GET"])
 def health():
-    return jsonify({
-        "status": "healthy",
-        "service": "FitFact Backend",
-        "uptime": "running"
-    })
+    return jsonify({"status": "healthy"}), 200
 
-# Info route
-@app.route("/info")
-def info():
-    return jsonify({
-        "project": "FitFact – Intelligent Text Verifier",
-        "version": "v1.0",
-        "description": "Backend API for claim verification (prototype)."
-    })
-
-# Verify Claim (main API)
+# Main API route
 @app.route("/verify_claim", methods=["POST"])
 def verify_claim():
     data = request.get_json()
-    claim_text = data.get("claim", "")
-
-    return jsonify({
-        "claim": claim_text,
+    claim = data.get("claim", "")
+    
+    # Placeholder response (later will be replaced with ML/NLP model)
+    response = {
+        "claim": claim,
         "verification_result": "This is a placeholder. AI verification will be added soon."
-    })
+    }
+    return jsonify(response), 200
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
