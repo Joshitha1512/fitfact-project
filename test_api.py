@@ -1,22 +1,13 @@
 import requests
 
-BASE_URL = "https://fitfact-backend.onrender.com"  
+# Use localhost if testing locally, or your Render URL if live
+BASE_URL = "https://fitfact-backend.onrender.com"
 
-def test_home():
-    r = requests.get(BASE_URL + "/")
-    print("Home:", r.status_code, r.text[:100])  
+data = {"claim": "100 sit-ups burn belly fat"}
 
-def test_health():
-    r = requests.get(BASE_URL + "/health")
-    print("Health:", r.status_code, r.json())
-
-def test_verify_claim():
-    payload = {"claim": "100 sit-ups burn belly fat"}
-    r = requests.post(BASE_URL + "/verify_claim", json=payload)
-    print("Verify Claim:", r.status_code, r.json())
-
-
-if __name__ == "__main__":
-    test_home()
-    test_health()
-    test_verify_claim()
+try:
+    response = requests.post(f"{BASE_URL}/verify_claim", json=data)
+    response.raise_for_status()  # raise error if not 200
+    print(response.json())
+except requests.exceptions.RequestException as e:
+    print("Error:", e)
