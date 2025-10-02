@@ -6,7 +6,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET"])
 def home():
     return """
-        <h1>✅ FitFact Backend is Running</h1>
+        <h1>FitFact Backend is Running</h1>
         <p>Status: OK</p>
         <p>Use the <code>/verify_claim</code> endpoint to check fitness-related claims.</p>
     """, 200
