@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+CORS(app)
 
-# Mock function (later this will be replaced with Member 1's ML/API integration)
 def verify_claim_logic(claim):
     if "sit-ups" in claim.lower() and "belly fat" in claim.lower():
         return {
@@ -19,11 +21,16 @@ def verify_claim_logic(claim):
             "confidence": 0.50
         }
 
+# Home route to replace 404
+@app.route("/", methods=["GET"])
+def home():
+    return "<h2>FitFact Backend is Running</h2>", 200
+
+# Claim verification route
 @app.route("/verify_claim", methods=["POST"])
 def verify_claim():
     data = request.get_json()
     claim = data.get("claim", "")
-
     result = verify_claim_logic(claim)
     return jsonify(result)
 
